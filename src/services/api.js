@@ -1,0 +1,9 @@
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://ec2-3-130-236-173.us-east-2.compute.amazonaws.com:8080/"
+});
+
+api.defaults.headers.common.Authorization = "eyJhbGciOiJIUzUxMiJ9.eyJ0ZW5hbnRfaWQiOiJhcnRlcGFubyIsInN1YiI6IkFETUlOIiwiY3JlYXRlZCI6eyJuYW5vIjoyOTY0NzMwMDAsInllYXIiOjIwMTksIm1vbnRoVmFsdWUiOjcsImRheU9mTW9udGgiOjE2LCJob3VyIjoyMywibWludXRlIjo0Niwic2Vjb25kIjoyMiwibW9udGgiOiJKVUxZIiwiZGF5T2ZZZWFyIjoxOTcsImRheU9mV2VlayI6IlRVRVNEQVkiLCJjaHJvbm9sb2d5Ijp7ImNhbGVuZGFyVHlwZSI6Imlzbzg2MDEiLCJpZCI6IklTTyJ9fSwiZXhwIjoxNTYzNDE3OTgyfQ.5FmiJxBV8I0EyKK9nV461_6GDqW4YlqwtCYY1bQlbOWflKBQvfuNZkMi_iuLY9qNdoA-VdvTnsnv1l0ahG9isw";
+
+export default api;
