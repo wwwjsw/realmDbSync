@@ -24,7 +24,7 @@ export default function App() {
   });
 
   function downloadClients() {
-    api.get("wwwjsw/followers").then(response => {
+    api.get(`${text}/followers`).then(response => {
       getRealm().then(realm => {
         realm.write(() => {
           response.data.forEach(obj => {
@@ -60,7 +60,9 @@ export default function App() {
     getRealm()
       .then(realm => {
         setProfile(
-          realm.objects(FOLLOWERS_SCHEMA).filtered(`login LIKE '*${text}*?'`)
+          realm
+            .objects(FOLLOWERS_SCHEMA)
+            .filtered(`login LIKE '*${text.toLowerCase()}*?'`)
         );
         Keyboard.dismiss();
       })
@@ -75,7 +77,7 @@ export default function App() {
     <Container>
       <Title>{info}</Title>
       <Form>
-        <Submit onPress={downloadClients.bind(this)}>
+        <Submit onPress={() => downloadClients(text)}>
           <Title>Download</Title>
         </Submit>
         <Submit onPress={clearAllClients.bind(this)}>
