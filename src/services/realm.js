@@ -1,13 +1,13 @@
-const Realm = require("realm");
+const Realm = require('realm');
 
-import { ClientsSchema } from "../schemas/allSchemas";
+import { FollowersSchema } from '../schemas/allSchemas';
 
 export default function getRealm() {
   const databaseOptions = {
-    path: "banco.realm",
-    schema: [ClientsSchema],
+    path: 'github.realm',
+    schema: [FollowersSchema],
     schemaVersion: 0,
-    deleteRealmIfMigrationNeeded: true
+    deleteRealmIfMigrationNeeded: true,
   };
 
   return Realm.open(databaseOptions);

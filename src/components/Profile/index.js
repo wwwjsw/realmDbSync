@@ -1,4 +1,5 @@
 import React from "react";
+import { Image } from "react-native";
 
 import {
   Container,
@@ -8,13 +9,17 @@ import {
   Stat,
   StatCount,
   Refresh,
-  RefreshText
+  RefreshText,
 } from "./styles";
 
-export default function Client({ data, onRefresh }) {
+export default function Profile({ data, onRefresh }) {
   return (
     <Container>
-      <Name>{data.nome}</Name>
+      <Image
+        source={{ uri: data.avatar_url }}
+        style={{ flexGrow: 2, width: 100, height: 100 }}
+      />
+      <Name>{data.login}</Name>
       <Description>{data.id}</Description>
 
       {/* <Stats>

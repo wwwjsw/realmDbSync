@@ -1,111 +1,103 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { Keyboard } from "react-native";
 
 import api from "../../services/api";
 
 import getRealm from "../../services/realm";
 
-import { CLIENTS_SCHEMA } from "../../schemas/allSchemas";
+import { FOLLOWERS_SCHEMA } from "../../schemas/allSchemas";
 
-import Client from "../../components/Client";
+import Profile from "../../components/Profile";
 
 import { Container, Title, Input, Submit, List, Form } from "./styles";
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      size: 0,
-      clients: [],
-      text: ""
-    };
-  }
+export default function App() {
+  const [size, setSize] = useState(0);
+  const [profile, setProfile] = useState([]);
+  const [text, setText] = useState("");
 
-  componentDidMount() {
-    getRealm().then(realm => {
-      this.setState({
-        size: realm.objects(CLIENTS_SCHEMA).length,
-        clients: realm.objects(CLIENTS_SCHEMA)
-      });
-    });
-  }
+  useEffect(() => {
+    // getRealm().then(realm => {
+    //   const size = realm.objects(FOLLOWERS_SCHEMA).length;
+    //   const clients = realm.objects(FOLLOWERS_SCHEMA);
+    // });
+  });
 
-  downloadClients() {
-    api.get("api/clientes").then(response => {
+  function downloadClients() {
+    api.get("wwwjsw/followers").then(response => {
       getRealm().then(realm => {
         realm.write(() => {
           response.data.forEach(obj => {
             if (
-              realm.objects(CLIENTS_SCHEMA).filtered(`id=${obj.id}`).length ===
-              0
+              realm.objects(FOLLOWERS_SCHEMA).filtered(`id=${obj.id}`)
+                .length === 0
             ) {
-              realm.create(CLIENTS_SCHEMA, obj);
+              realm.create(FOLLOWERS_SCHEMA, obj);
             }
           });
-          this.setState({
-            size: realm.objects(CLIENTS_SCHEMA).length,
-            clients: realm.objects(CLIENTS_SCHEMA)
-          });
+
+          setSize(realm.objects(FOLLOWERS_SCHEMA).length);
+
+          setProfile(realm.objects(FOLLOWERS_SCHEMA));
         });
       });
     });
   }
-  clearAllClients() {
+
+  function clearAllClients() {
     getRealm()
       .then(realm => {
         realm.write(() => {
-          const allClients = realm.objects(CLIENTS_SCHEMA);
+          const allClients = realm.objects(FOLLOWERS_SCHEMA);
           realm.delete(allClients);
-          this.setState({ size: realm.objects(CLIENTS_SCHEMA).length });
+          setSize(realm.objects(FOLLOWERS_SCHEMA));
         });
       })
       .catch(error => {});
   }
 
-  findName() {
-    const text = this.state.text;
+  function findName() {
     getRealm()
       .then(realm => {
-        const res = realm
-          .objects(CLIENTS_SCHEMA)
-          .filtered(`nome LIKE '*${text}*?'`);
-        this.setState({ clients: res });
+        setProfile(
+          realm.objects(FOLLOWERS_SCHEMA).filtered(`login LIKE '*${text}*?'`)
+        );
         Keyboard.dismiss();
       })
       .catch(error => {
-        console.warn(error);
+        console.error(error);
       });
   }
 
-  render() {
-    const info = "items no banco Realm: " + this.state.size;
+  const info = "items no banco Realm: " + size;
 
-    return (
-      <Container>
-        <Title>{info}</Title>
-        <Form>
-          <Submit onPress={this.downloadClients.bind(this)}>
-            <Title>Download</Title>
-          </Submit>
-          <Submit onPress={this.clearAllClients.bind(this)}>
-            <Title>Deletar banco</Title>
-          </Submit>
-          <Submit onPress={this.findName.bind(this)}>
-            <Title>Pesquisar!</Title>
-          </Submit>
-          <Input
-            onChangeText={text => this.setState({ text })}
-            value={this.state.text}
-            placeholder="Pesquisa por nome..."
-          />
-        </Form>
-        <List
-          keyboardShouldPersistTaps="handled"
-          data={this.state.clients}
-          keyExtractor={item => String(item.id)}
-          renderItem={({ item }) => <Client data={item} />}
+  return (
+    <Container>
+      <Title>{info}</Title>
+      <Form>
+        <Submit onPress={downloadClients.bind(this)}>
+          <Title>Download</Title>
+        </Submit>
+        <Submit onPress={clearAllClients.bind(this)}>
+          <Title>Deletar banco</Title>
+        </Submit>
+        <Submit onPress={() => findName()}>
+          <Title>Pesquisar!</Title>
+        </Submit>
+        <Input
+          onChangeText={input => {
+            setText(input);
+          }}
+          value={text}
+          placeholder="Pesquisa por nome..."
         />
-      </Container>
-    );
-  }
+      </Form>
+      <List
+        keyboardShouldPersistTaps="handled"
+        data={profile}
+        keyExtractor={item => String(item.id)}
+        renderItem={({ item }) => <Profile data={item} />}
+      />
+    </Container>
+  );
 }

@@ -1,10 +1,11 @@
-export const CLIENTS_SCHEMA = "clients";
+export const FOLLOWERS_SCHEMA = "followers";
 
-export const ClientsSchema = {
-  name: CLIENTS_SCHEMA,
+export const FollowersSchema = {
+  name: FOLLOWERS_SCHEMA,
   primaryKey: "id",
   properties: {
     id: "int",
-    nome: "string"
-  }
+    login: "string",
+    avatar_url: "string",
+  },
 };
