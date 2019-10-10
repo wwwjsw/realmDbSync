@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Keyboard } from "react-native";
 
 import api from "../../services/api";
@@ -15,13 +15,7 @@ export default function App() {
   const [size, setSize] = useState(0);
   const [profile, setProfile] = useState([]);
   const [text, setText] = useState("");
-
-  useEffect(() => {
-    // getRealm().then(realm => {
-    //   const size = realm.objects(FOLLOWERS_SCHEMA).length;
-    //   const clients = realm.objects(FOLLOWERS_SCHEMA);
-    // });
-  });
+  const [oldText, setOldText] = useState("");
 
   function downloadClients() {
     api.get(`${text}/followers`).then(response => {
@@ -52,6 +46,7 @@ export default function App() {
           realm.delete(allClients);
           setSize(realm.objects(FOLLOWERS_SCHEMA));
         });
+        setSize(0);
       })
       .catch(error => {});
   }
@@ -71,20 +66,26 @@ export default function App() {
       });
   }
 
+  function DownloadClientsOrFindName() {
+    if (oldText !== text) {
+      clearAllClients()
+      downloadClients(text)
+    } else {
+      findName()
+    }
+  }
+
   const info = "items no banco Realm: " + size;
 
   return (
     <Container>
       <Title>{info}</Title>
       <Form>
-        <Submit onPress={() => downloadClients(text)}>
-          <Title>Download</Title>
+        <Submit onPress={() => DownloadClientsOrFindName()}>
+          <Title>Search!</Title>
         </Submit>
         <Submit onPress={clearAllClients.bind(this)}>
           <Title>Deletar banco</Title>
-        </Submit>
-        <Submit onPress={() => findName()}>
-          <Title>Pesquisar!</Title>
         </Submit>
         <Input
           onChangeText={input => {
