@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Keyboard } from "react-native";
+import { Keyboard, Alert } from "react-native";
 
 import api from "../../services/api";
 
@@ -35,6 +35,15 @@ export default function App() {
           setProfile(realm.objects(FOLLOWERS_SCHEMA));
         });
       });
+    },
+    error => {
+      Alert.alert(
+        error.name,
+        error.message,
+        [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+        {cancelable: false},
+      );
+      console.tron.log(error);
     });
   }
 
@@ -48,7 +57,9 @@ export default function App() {
         });
         setSize(0);
       })
-      .catch(error => {});
+      .catch(error => {
+        console.tron.log(error);  
+      });
   }
 
   function findName() {
@@ -62,7 +73,7 @@ export default function App() {
         Keyboard.dismiss();
       })
       .catch(error => {
-        console.error(error);
+        console.tron.log(error);
       });
   }
 
@@ -75,7 +86,7 @@ export default function App() {
     }
   }
 
-  const info = "items no banco Realm: " + size;
+  const info = "RealmDb itens: " + size;
 
   return (
     <Container>
@@ -85,14 +96,14 @@ export default function App() {
           <Title>Search!</Title>
         </Submit>
         <Submit onPress={clearAllClients.bind(this)}>
-          <Title>Deletar banco</Title>
+          <Title>Delete Realm</Title>
         </Submit>
         <Input
           onChangeText={input => {
             setText(input);
           }}
           value={text}
-          placeholder="Pesquisa por nome..."
+          placeholder="Github user..."
         />
       </Form>
       <List

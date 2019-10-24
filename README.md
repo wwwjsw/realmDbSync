@@ -16,7 +16,7 @@
 FUTURE IMPLEMENTATIONS
 - [x] Unify Download and Search button
 - [x] Delete profiles when searching new term 
-- [ ] Better error handler
+- [x] Better error handler
 - [ ] Install a debugger
 - [ ] Favorite profiles on Local storage
 - [ ] Update profile item style
